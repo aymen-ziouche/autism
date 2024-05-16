@@ -16,13 +16,13 @@ class ResultsModel extends Results {
   }
 
   Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      'emotions': emotions,
-    };
+    return emotions;
   }
 
   factory ResultsModel.fromMap(Map<String, dynamic> map) {
-    return ResultsModel(emotions: Map<String, String>.from(map["emotions"] ?? map));
+    Map<String, dynamic> rawEmotions = map['emotions'] ?? map;
+    Map<String, String> emotions = rawEmotions.map((key, value) => MapEntry(key, value.toString()));
+    return ResultsModel(emotions: emotions);
   }
 
   String toJson() => json.encode(toMap());

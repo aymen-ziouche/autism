@@ -35,9 +35,9 @@ class PatientCubit extends Cubit<PatientState> {
     }
   }
 
-  Future<void> saveResults({required String patientId,required ResultsModel results}) async {
+  Future<void> saveResults({required String patientId, required ResultsModel results}) async {
     try {
-      await saveResultsUseCase.call( patientId: patientId, results: results);
+      await saveResultsUseCase.call(patientId: patientId, results: results);
     } catch (e) {
       emit(PatientState.error(e.toString()));
     }

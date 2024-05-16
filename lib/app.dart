@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -25,6 +26,8 @@ class _AppState extends State<App> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+    print("Firestore instance: ${FirebaseFirestore.instance.app.name}");
+
     WidgetsBinding.instance.addObserver(this);
   }
 

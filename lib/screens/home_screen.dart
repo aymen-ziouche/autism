@@ -6,8 +6,10 @@ import 'package:intl/intl.dart';
 import 'package:xpert_autism/common/custom_router.dart';
 import 'package:xpert_autism/common/main_button.dart';
 import 'package:xpert_autism/features/patient/data/datasources/home_controller.dart';
+import 'package:xpert_autism/features/patient/data/models/results_model.dart';
 import 'package:xpert_autism/features/patient/presentation/cubit/patient_cubit.dart';
 import 'package:xpert_autism/screens/neutral_screen.dart';
+import 'package:xpert_autism/screens/old_results_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -61,14 +63,24 @@ class _HomeScreenState extends State<HomeScreen> {
                         padding: const EdgeInsets.all(10.0),
                         child: GestureDetector(
                           onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => NeutralScreen(
-                                  patientId: patient.uid!,
-                                ),
-                              ),
-                            );
+                            patient.results != null
+                                ? Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => OldResultsScreen(
+                                        detectedEmotions: patient.results!.emotions,
+                                        patientId: patient.uid!,
+                                      ),
+                                    ),
+                                  )
+                                : Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => NeutralScreen(
+                                        patientId: patient.uid!,
+                                      ),
+                                    ),
+                                  );
                           },
                           child: Container(
                             padding: const EdgeInsets.all(10),
