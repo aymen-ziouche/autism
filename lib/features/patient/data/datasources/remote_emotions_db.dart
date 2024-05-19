@@ -25,6 +25,7 @@ class EmotionDetector {
         String base64Image = base64Encode(imageBytes);
 
         var url = 'https://greatdev.pythonanywhere.com/detect';
+        
         var response = await dio.post(url,
             data: jsonEncode({'image': base64Image}), options: Options(contentType: Headers.jsonContentType));
 

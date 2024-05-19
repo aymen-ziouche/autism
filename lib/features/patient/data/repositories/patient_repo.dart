@@ -57,7 +57,7 @@ class Patientrepo implements BasePatientRepo {
         int seconds = (hundreds / 100).truncate();
         int minutes = (seconds / 60).truncate();
         // Handle timeout if desired emotion isn't detected within 2 minutes
-        if (minutes >= 2) {
+        if (minutes >= 1) {
           handleDetectionTimeout();
         }
       }
@@ -66,7 +66,7 @@ class Patientrepo implements BasePatientRepo {
     });
     completer.future.then((_) => closeStreamSubscription());
 
-    return completer.future.timeout(const Duration(minutes: 2), onTimeout: () => handleDetectionTimeout());
+    return completer.future.timeout(const Duration(minutes: 1), onTimeout: () => handleDetectionTimeout());
   }
 
   void resetEmotionCounts() {

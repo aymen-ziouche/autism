@@ -6,7 +6,6 @@ import 'package:intl/intl.dart';
 import 'package:xpert_autism/common/custom_router.dart';
 import 'package:xpert_autism/common/main_button.dart';
 import 'package:xpert_autism/features/patient/data/datasources/home_controller.dart';
-import 'package:xpert_autism/features/patient/data/models/results_model.dart';
 import 'package:xpert_autism/features/patient/presentation/cubit/patient_cubit.dart';
 import 'package:xpert_autism/screens/neutral_screen.dart';
 import 'package:xpert_autism/screens/old_results_screen.dart';
@@ -35,7 +34,7 @@ class _HomeScreenState extends State<HomeScreen> {
       builder: (context, state) {
         return patientCubit.patients == null
             ? Scaffold(
-                body: Center(child: Text("No patients")),
+                body: const Center(child: Text("No patients")),
                 floatingActionButton: SizedBox(
                     width: 150.w,
                     child: MainButton(
