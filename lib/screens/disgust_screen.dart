@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 import 'package:xpert_autism/features/patient/presentation/cubit/patient_cubit.dart';
 import 'package:xpert_autism/screens/angry_screen.dart';
 
@@ -17,6 +18,7 @@ class _DisgustScreenState extends State<DisgustScreen> {
   late PatientCubit patientCubit;
 
   int _currentImageIndex = 0;
+  FlutterTts flutterTts = FlutterTts();
 
   final _smilingImages = [
     "https://as2.ftcdn.net/v2/jpg/03/21/72/61/1000_F_321726194_pHtxATrvAwNke9rwEEmUDVNXBIRJGefv.jpg",
@@ -32,13 +34,16 @@ class _DisgustScreenState extends State<DisgustScreen> {
   }
 
   void _startImageCarousel() async {
-    await Future.delayed(const Duration(minutes: 1)); // Wait for 1 minute
+    await flutterTts.setLanguage("ar-SA");
+
     while (mounted) {
       // Loop while screen is active
       setState(() {
         _currentImageIndex = (_currentImageIndex + 1) % _smilingImages.length;
       });
-      await Future.delayed(const Duration(minutes: 1)); // Wait 1 minute between images
+      await flutterTts.speak("اِشْمَئِزَّ");
+
+      await Future.delayed(const Duration(seconds: 27));
     }
   }
 
@@ -49,7 +54,7 @@ class _DisgustScreenState extends State<DisgustScreen> {
       body: BlocConsumer<PatientCubit, PatientState>(
         listener: (context, state) {
           state.whenOrNull(
-            emotionDetected: (detectedEmotion) {
+            emotionDetected: (detectedEmotion) async {
               setState(() {
                 widget.detectedEmotions
                     .addAll({"disgust": detectedEmotion != "" ? detectedEmotion : "No Face Detected"});
@@ -60,6 +65,7 @@ class _DisgustScreenState extends State<DisgustScreen> {
               for (final entry in widget.detectedEmotions.entries) {
                 print('Key: ${entry.key}, Value: ${entry.value}');
               }
+              await flutterTts.stop();
 
               // Navigator.of(context).pushReplacementNamed(CustomRouter.sadScreen, arguments: detectedEmotion);
               Navigator.pushReplacement(
@@ -68,7 +74,6 @@ class _DisgustScreenState extends State<DisgustScreen> {
                   builder: (context) => AngryScreen(
                     detectedEmotions: widget.detectedEmotions,
                     patientId: widget.patientId,
-
                   ),
                 ),
               );

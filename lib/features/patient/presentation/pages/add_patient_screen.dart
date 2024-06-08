@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:xpert_autism/common/custom_dialog.dart';
-import 'package:xpert_autism/common/custom_router.dart';
 import 'package:xpert_autism/common/custom_theme.dart';
 import 'package:xpert_autism/common/main_button.dart';
 import 'package:xpert_autism/features/patient/data/models/patient_model.dart';
 import 'package:xpert_autism/features/patient/presentation/cubit/patient_cubit.dart';
 import 'package:xpert_autism/features/patient/presentation/widgets/custom_form_field.dart';
 import 'package:intl/intl.dart';
+import 'package:xpert_autism/screens/home_screen.dart';
 
 class AddPatientScreen extends StatefulWidget {
   const AddPatientScreen({super.key});
@@ -81,9 +81,11 @@ class _AddPatientScreenState extends State<AddPatientScreen> {
                   )).show();
             },
             addpatientloaded: () {
-              Navigator.popUntil(
+              Navigator.pushReplacement(
                 context,
-                ModalRoute.withName(CustomRouter.homeScreen),
+                MaterialPageRoute(
+                  builder: (context) => const HomeScreen(),
+                ),
               );
             },
           );

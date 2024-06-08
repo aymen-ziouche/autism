@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 import 'package:xpert_autism/features/patient/presentation/cubit/patient_cubit.dart';
 import 'package:xpert_autism/screens/surprised_screen.dart';
 
@@ -19,6 +20,7 @@ class _SadScreenState extends State<SadScreen> {
   late PatientCubit patientCubit;
 
   int _currentImageIndex = 0;
+  FlutterTts flutterTts = FlutterTts();
 
   final _smilingImages = [
     "https://as1.ftcdn.net/v2/jpg/00/48/88/36/1000_F_48883681_3YSVqKeyIvDNGZ9t0A8ynIFaeo64sHDm.jpg",
@@ -34,13 +36,17 @@ class _SadScreenState extends State<SadScreen> {
   }
 
   void _startImageCarousel() async {
-    await Future.delayed(const Duration(minutes: 1)); // Wait for 1 minute
+    await flutterTts.setLanguage("ar-SA");
+
     while (mounted) {
       // Loop while screen is active
       setState(() {
         _currentImageIndex = (_currentImageIndex + 1) % _smilingImages.length;
       });
-      await Future.delayed(const Duration(minutes: 1)); // Wait 5 seconds between images
+
+      await flutterTts.speak("اِحْزَنْ");
+
+      await Future.delayed(const Duration(seconds: 27));
     }
   }
 
@@ -51,7 +57,7 @@ class _SadScreenState extends State<SadScreen> {
       body: BlocConsumer<PatientCubit, PatientState>(
         listener: (context, state) {
           state.whenOrNull(
-            emotionDetected: (detectedEmotion) {
+            emotionDetected: (detectedEmotion) async {
               setState(() {
                 widget.detectedEmotions
                     .addAll({"Sad": detectedEmotion != "" ? detectedEmotion : "No Face Detected"});
@@ -62,6 +68,7 @@ class _SadScreenState extends State<SadScreen> {
               for (final entry in widget.detectedEmotions.entries) {
                 print('Key: ${entry.key}, Value: ${entry.value}');
               }
+              await flutterTts.stop();
 
               // Navigator.of(context).pushReplacementNamed(CustomRouter.sadScreen, arguments: detectedEmotion);
               Navigator.pushReplacement(

@@ -4,7 +4,8 @@ import 'package:xpert_autism/features/patient/domain/entities/patient_entity.dar
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class PatientModel extends Patient {
-  ResultsModel? results;
+  List<ResultsModel>? results; // Now a list of ResultsModel
+
   PatientModel({
     super.uid, // Now nullable
     required super.firstName,
@@ -12,14 +13,20 @@ class PatientModel extends Patient {
     required super.gender,
     required super.dateOfBirth,
     required super.autismDegree,
-    this.results,
+    this.results = const [], // Initialize with an empty list
   });
 
   // Factory method to create a PatientModel from a Firestore document
   factory PatientModel.fromFirestore(DocumentSnapshot doc) {
     Map docData = doc.data() as Map;
-    ResultsModel? results = docData['results'] != null ? ResultsModel.fromMap(docData['results']) : null;
-
+    List<ResultsModel> results = [];
+    if (docData['results'] != null) {
+      // Ensure results is treated as a list
+      var resultsList = docData['results'] as List;
+      for (var result in resultsList) {
+        results.add(ResultsModel.fromMap(result as Map<String, dynamic>));
+      }
+    }
     return PatientModel(
       uid: doc.id,
       firstName: docData['firstName'] ?? '',

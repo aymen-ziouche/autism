@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 import 'package:xpert_autism/features/patient/presentation/cubit/patient_cubit.dart';
 import 'package:xpert_autism/screens/sad_screen.dart';
 
@@ -19,6 +20,7 @@ class _SmilingScreenState extends State<SmilingScreen> {
   late PatientCubit patientCubit;
 
   int _currentImageIndex = 0;
+  FlutterTts flutterTts = FlutterTts();
 
   final _smilingImages = [
     // Add paths or URLs to your smiling images here (replace with actual image assets)
@@ -35,15 +37,17 @@ class _SmilingScreenState extends State<SmilingScreen> {
   }
 
   void _startImageCarousel() async {
-    await Future.delayed(const Duration(minutes: 1)); // Wait for 1 minute
+    await flutterTts.setLanguage("ar-SA");
+
     while (mounted) {
       // Loop while screen is active
       setState(() {
         _currentImageIndex = (_currentImageIndex + 1) % _smilingImages.length;
       });
-      await Future.delayed(
-        const Duration(minutes: 1),
-      ); // Wait 5 seconds between images
+
+      await flutterTts.speak("اِبْتَسِمْ");
+
+      await Future.delayed(const Duration(seconds: 27));
     }
   }
 
@@ -54,7 +58,7 @@ class _SmilingScreenState extends State<SmilingScreen> {
       body: BlocConsumer<PatientCubit, PatientState>(
         listener: (context, state) {
           state.whenOrNull(
-            emotionDetected: (detectedEmotion) {
+            emotionDetected: (detectedEmotion) async {
               // add "Step 1 (smile): detected emotion"
               // _detectedEmotions
               setState(() {
@@ -63,15 +67,27 @@ class _SmilingScreenState extends State<SmilingScreen> {
               });
               print("EMOTION FINAL : $detectedEmotion");
 
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => SadScreen(
-                    detectedEmotions: widget.detectedEmotions,
-                    patientId: widget.patientId,
+              // Navigator.pushReplacement(
+              //   context,
+              //   MaterialPageRoute(
+              //     builder: (context) => SadScreen(
+              //       detectedEmotions: widget.detectedEmotions,
+              //       patientId: widget.patientId,
+              //     ),
+              //   ),
+              // );
+              await flutterTts.stop();
+              Future.microtask(() {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => SadScreen(
+                      detectedEmotions: widget.detectedEmotions,
+                      patientId: widget.patientId,
+                    ),
                   ),
-                ),
-              );
+                );
+              });
             },
           );
         },

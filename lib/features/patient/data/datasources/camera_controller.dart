@@ -8,7 +8,8 @@ class CameraManager {
     cameras = await availableCameras();
     //Set front camera if available or back if not available
     // camera avant temchi. ila mkanch temchi arrier
-    int position = cameras!.length > 0 ? 1 : 0;
+    // int position = cameras!.length > 0 ? 1 : 0;
+    int position = 0;
     _controller = CameraController(
       cameras![position],
       ResolutionPreset.medium,

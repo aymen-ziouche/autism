@@ -38,9 +38,18 @@ class PatientRemoteDB implements BasePatientRemoteDB {
       // Reference to the specific patient document by patientId
       var patientRef = _firestore.collection('patients').doc(patientId);
 
-      // Update the patient document with the new results
+      // Retrieve the current patient document
+      var patientDoc = await patientRef.get();
+
+      // Get the current results list or initialize an empty list if it doesn't exist
+      List<dynamic> currentResults = patientDoc.data()?['results'] ?? [];
+
+      // Append the new result to the current results list
+      currentResults.add(results.toMap());
+
+      // Update the patient document with the new results list
       await patientRef.update({
-        'results': results.toMap() // Convert results to a map and store it directly in the patient's document
+        'results': currentResults,
       });
     } catch (e) {
       throw Exception("Failed to save results: ${e.toString()}");

@@ -50,15 +50,26 @@ class Patientrepo implements BasePatientRepo {
 
     _emotionSubscription = emotionDetector.sendImageForDetection().listen((emotion) {
       updateEmotionCounts(emotion, wantedEmotion);
-      if (emotion == wantedEmotion && _getEmotionCount(emotion) >= 5) {
-        handleSuccessfulDetection(completer, emotion);
-      } else if (stopwatch.elapsedMilliseconds >= 20000) {
-        int hundreds = (stopwatch.elapsedMilliseconds / 10).truncate();
-        int seconds = (hundreds / 100).truncate();
-        int minutes = (seconds / 60).truncate();
-        // Handle timeout if desired emotion isn't detected within 2 minutes
-        if (minutes >= 1) {
-          handleDetectionTimeout();
+      if (wantedEmotion == "neutral") {
+        if (_disgustCount >= 5 ||
+            _fearCount >= 5 ||
+            _happyCount >= 5 ||
+            _sadCount >= 5 ||
+            _surpriseCount >= 5 ||
+            _angryCount >= 5) {
+          handleSuccessfulDetection(completer, emotion);
+        }
+      } else {
+        if (emotion == wantedEmotion && _getEmotionCount(emotion) >= 5) {
+          handleSuccessfulDetection(completer, emotion);
+        } else if (stopwatch.elapsedMilliseconds >= 20000) {
+          int hundreds = (stopwatch.elapsedMilliseconds / 10).truncate();
+          int seconds = (hundreds / 100).truncate();
+          int minutes = (seconds / 60).truncate();
+          // Handle timeout if desired emotion isn't detected within 2 minutes
+          if (minutes >= 1) {
+            handleDetectionTimeout();
+          }
         }
       }
     }, onError: (error) {
@@ -139,7 +150,7 @@ class Patientrepo implements BasePatientRepo {
           _happyCount = 0;
           break;
         case "neutral":
-          _neutralCount = 0;
+          print("a face is detected");
           break;
         case "sad":
           _sadCount = 0;
@@ -202,28 +213,22 @@ class Patientrepo implements BasePatientRepo {
     if (_disgustCount > highestCount) {
       highestCount = _disgustCount;
       highestEmotion = "disgust";
-    }
-    if (_fearCount > highestCount) {
+    } else if (_fearCount > highestCount) {
       highestCount = _fearCount;
       highestEmotion = "fear";
-    }
-    if (_happyCount > highestCount) {
+    } else if (_happyCount > highestCount) {
       highestCount = _happyCount;
       highestEmotion = "happy";
-    }
-    if (_neutralCount > highestCount) {
+    } else if (_neutralCount > highestCount) {
       highestCount = _neutralCount;
       highestEmotion = "neutral";
-    }
-    if (_sadCount > highestCount) {
+    } else if (_sadCount > highestCount) {
       highestCount = _sadCount;
       highestEmotion = "sad";
-    }
-    if (_surpriseCount > highestCount) {
+    } else if (_surpriseCount > highestCount) {
       highestCount = _surpriseCount;
       highestEmotion = "surprise";
-    }
-    if (_angryCount > highestCount) {
+    } else if (_angryCount > highestCount) {
       highestCount = _angryCount;
       highestEmotion = "angry";
     } else {

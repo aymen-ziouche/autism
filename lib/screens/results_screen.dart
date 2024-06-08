@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:xpert_autism/features/patient/data/models/results_model.dart';
 import 'package:xpert_autism/features/patient/presentation/cubit/patient_cubit.dart';
+import 'package:xpert_autism/screens/home_screen.dart';
 
 class ResultsScreen extends StatefulWidget {
   final Map<String, String> detectedEmotions;
@@ -59,6 +60,16 @@ class _ResultsScreenState extends State<ResultsScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Results'),
+        leading: InkWell(
+            onTap: () {
+              Navigator.of(context).pushReplacement(MaterialPageRoute(
+                builder: (context) => const HomeScreen(),
+              ));
+            },
+            child: const Icon(
+              Icons.arrow_back,
+              color: Colors.black,
+            )),
       ),
       body: Center(
         child: Column(

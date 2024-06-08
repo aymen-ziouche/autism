@@ -16,7 +16,7 @@ class ResultsModel extends Results {
   }
 
   Map<String, dynamic> toMap() {
-    return emotions;
+    return {'emotions': emotions};
   }
 
   factory ResultsModel.fromMap(Map<String, dynamic> map) {

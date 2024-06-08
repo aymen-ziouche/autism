@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 import 'package:xpert_autism/features/patient/presentation/cubit/patient_cubit.dart';
 import 'package:xpert_autism/screens/smiling_screen.dart';
 import 'package:youtube_video_player/potrait_player.dart';
@@ -16,12 +17,20 @@ class _NeutralScreenState extends State<NeutralScreen> {
   late PatientCubit patientCubit;
 
   Map<String, String> _detectedEmotions = {};
+  FlutterTts flutterTts = FlutterTts();
 
   @override
   void initState() {
     super.initState();
     patientCubit = context.read<PatientCubit>();
     patientCubit.listenForEmotions(wantedEmotion: 'neutral'); // Start listening
+    Future.delayed(
+      const Duration(seconds: 2),
+      () async {
+        await flutterTts.setLanguage("ar-SA");
+        await flutterTts.speak("انظر الى الشاشة");
+      },
+    );
   }
 
   @override
@@ -31,12 +40,13 @@ class _NeutralScreenState extends State<NeutralScreen> {
       body: BlocConsumer<PatientCubit, PatientState>(
         listener: (context, state) {
           state.whenOrNull(
-            emotionDetected: (detectedEmotion) {
+            emotionDetected: (detectedEmotion) async {
               // add "Step 1 (smile): detected emotion"
               // _detectedEmotions
               setState(() {
                 _detectedEmotions.addAll({"Neutral": detectedEmotion});
               });
+              await flutterTts.stop();
 
               // Navigator.of(context).pushReplacementNamed(CustomRouter.smilingScreen, arguments: detectedEmotion);
               Navigator.pushReplacement(

@@ -62,12 +62,12 @@ class _HomeScreenState extends State<HomeScreen> {
                         padding: const EdgeInsets.all(10.0),
                         child: GestureDetector(
                           onTap: () {
-                            patient.results != null
+                            patient.results != null && patient.results!.isNotEmpty
                                 ? Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                       builder: (context) => OldResultsScreen(
-                                        detectedEmotions: patient.results!.emotions,
+                                        results: patient.results!,
                                         patientId: patient.uid!,
                                       ),
                                     ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 import 'package:xpert_autism/features/patient/presentation/cubit/patient_cubit.dart';
 import 'package:xpert_autism/screens/disgust_screen.dart';
 
@@ -17,6 +18,7 @@ class _FearScreenState extends State<FearScreen> {
   late PatientCubit patientCubit;
 
   int _currentImageIndex = 0;
+  FlutterTts flutterTts = FlutterTts();
 
   final _smilingImages = [
     "https://as1.ftcdn.net/v2/jpg/07/03/82/08/1000_F_703820824_6e67nTMNHLtxKGdNcvwGScDZeaEhgb9O.jpg",
@@ -32,13 +34,17 @@ class _FearScreenState extends State<FearScreen> {
   }
 
   void _startImageCarousel() async {
-    await Future.delayed(const Duration(minutes: 1)); // Wait for 1 minute
+    await flutterTts.setLanguage("ar-SA");
+
     while (mounted) {
       // Loop while screen is active
       setState(() {
         _currentImageIndex = (_currentImageIndex + 1) % _smilingImages.length;
       });
-      await Future.delayed(const Duration(minutes: 1)); // Wait 5 seconds between images
+
+      await flutterTts.speak("خَفْ");
+
+      await Future.delayed(const Duration(seconds: 27));
     }
   }
 
@@ -49,7 +55,7 @@ class _FearScreenState extends State<FearScreen> {
       body: BlocConsumer<PatientCubit, PatientState>(
         listener: (context, state) {
           state.whenOrNull(
-            emotionDetected: (detectedEmotion) {
+            emotionDetected: (detectedEmotion) async {
               setState(() {
                 widget.detectedEmotions
                     .addAll({"fear": detectedEmotion != "" ? detectedEmotion : "No Face Detected"});
@@ -60,6 +66,7 @@ class _FearScreenState extends State<FearScreen> {
               for (final entry in widget.detectedEmotions.entries) {
                 print('Key: ${entry.key}, Value: ${entry.value}');
               }
+              await flutterTts.stop();
 
               // Navigator.of(context).pushReplacementNamed(CustomRouter.sadScreen, arguments: detectedEmotion);
               Navigator.pushReplacement(
@@ -68,7 +75,6 @@ class _FearScreenState extends State<FearScreen> {
                   builder: (context) => DisgustScreen(
                     detectedEmotions: widget.detectedEmotions,
                     patientId: widget.patientId,
-
                   ),
                 ),
               );

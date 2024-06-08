@@ -51,7 +51,9 @@ class PatientCubit extends Cubit<PatientState> {
 
   Future<void> listenForEmotions({required String wantedEmotion}) async {
     try {
+      emit(const PatientState.initial());
       String detectedEmotion = await _detectEmotionUsecase.call(wantedEmotion: wantedEmotion);
+      print("Emotion detected: $detectedEmotion");
       emit(PatientState.emotionDetected(detectedEmotion));
     } catch (e) {
       emit(PatientState.error(e.toString()));
